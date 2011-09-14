@@ -7,10 +7,12 @@ import tornado.ioloop
 import tornado.web
 import tornado.httpserver
 
-from habroid.handlers import BlogTypes
+from habroid.handlers import BlogTypes, BlogList
 import habroid.settings as settings
 
-urls = [(r'/blogtypes', BlogTypes)]
+urls = [(r'/blogtypes', BlogTypes),
+        (r'/bloglist', BlogList),
+       ]
 
 app = tornado.web.Application(urls)
     
