@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+    <meta charset="utf-8">
+    <head>
+        <title>Habroid testing page</title>
+        <script src="jquery-1.6.1.js"></script>
+        <script>
+            function blogTypes(data, textStatus, jqXHR) {
+                var len = data.response.length,
+                    parent = $('#content');
+                    
+                for (var i = 0; i < len; ++i) {
+                    var x = data.response[i];
+                    if (x.id == '') {
+                        div = 'root';
+                    } else {
+                        div = x.id.substring(0, x.id.length-1);
+                        div.replace('/', '');
+                    }
+                    parent.append('<div id="' + div + '"><a href="#" id="' + div + '">' + x['name'] + '</a> (' + x.count + ')</div>');
+                }
+                $('a').click(function (event) {
+                    event.preventDefault();
+                    getBlogList(event.target.id);
+                })
+            }
+            
+            function blogList(data, textStatus, jqXHR) {
+                var len = data.response.length,
+                    parent = $('#content');               
+
+                for (var i = 0; i < len; ++i) {
+                    var x = data.response[i];
+                    div = x.id.substring(0, x.id.length-1);
+                    div.replace('/', '');
+                    parent.append('<div id="' + div + '"><a href="http://habrahabr.ru/bloglist/' + x.id + '">' + x['name'] + '</a></div>');
+                }
+            }
+
+            function getBlogList(cat) {
+                $('#content').children().remove();
+                               
+                $.ajax({url: 'http://localhost:8080/bloglist?cat=' + (cat || ''),
+                        dataType: 'jsonp', 
+                        crossDomain: true, 
+                        success: blogList
+                        });
+            }
+            
+            function getBlogTypes() {
+                $('#content').children().remove();
+                $.ajax({url: 'http://localhost:8080/blogtypes', 
+                        dataType: 'jsonp', 
+                        crossDomain: true, 
+                        success: blogTypes
+                        });
+            }
+        
+            $(document).ready(function () {
+                $('button#blog-types').click(getBlogTypes);
+                $('button#blog-list').click(getBlogList);
+            });
+        </script>
+    </head>
+    <body>
+        <div id='button-block'>
+            <button id='blog-types'>Рубрики</button>
+            <button id='blog-list'>Блоги</button>
+        </div>
+        <div id='content'>
+        </div>
+    </body>
+</html>
