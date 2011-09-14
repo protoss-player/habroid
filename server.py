@@ -7,20 +7,18 @@ import tornado.ioloop
 import tornado.web
 import tornado.httpserver
 
-import handlers
-import settings
+from habroid.handlers import BlogTypes
+import habroid.settings as settings
 
-urls = [
-        (r'/blogtypes', handlers.BlogTypes)
-       ]
+urls = [(r'/blogtypes', BlogTypes)]
 
 app = tornado.web.Application(urls)
     
 def run_server():
-    logging.info('Starting HabrAPI on http://{address}:{port}/'.format(**settings.REST_SERVER))
+    logging.info('Starting Habroid API on http://{address}:{port}/'.format(**settings.REST_SERVER))
     
     http_server = tornado.httpserver.HTTPServer(app)
-    http_server.listen(**settings.REST_SERVER)    
+    http_server.listen(**settings.REST_SERVER)
     try:
         tornado.ioloop.IOLoop.instance().start()
     except KeyboardInterrupt:
