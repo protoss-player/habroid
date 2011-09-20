@@ -18,7 +18,13 @@ class BlogList(tornado.web.RequestHandler):
         except:
             cat_id = ''
 
-        d = PyQuery(url='{}/{}'.format(BLOG_LIST, cat_id))
+        try:
+            letters = self.get_argument('search')
+            letters = '?letters={}'.format(letters.encode('utf-8'))
+        except:
+            letters = ''
+
+        d = PyQuery(url='{}/{}{}'.format(BLOG_LIST, cat_id, letters))
         
         data = []
         for tag in d("a.title"):

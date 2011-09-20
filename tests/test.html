@@ -33,7 +33,7 @@
                     var x = data.response[i];
                     div = x.id.substring(0, x.id.length-1);
                     div.replace('/', '');
-                    parent.append('<div id="' + div + '"><a href="http://habrahabr.ru/bloglist/' + x.id + '">' + x['name'] + '</a></div>');
+                    parent.append('<div id="' + div + '"><a href="http://habrahabr.ru/blogs/' + x.id + '">' + x['name'] + '</a></div>');
                 }
             }
 
@@ -55,10 +55,20 @@
                         success: blogTypes
                         });
             }
+            
+            function searchBlogs() {
+                $('#content').children().remove();
+                $.ajax({url: 'http://localhost:8080/bloglist?search=' + $('input[name=search-query]').val(),
+                        dataType: 'jsonp',
+                        crossDomain: true,
+                        success: blogList
+                        });
+            }
         
             $(document).ready(function () {
                 $('button#blog-types').click(getBlogTypes);
                 $('button#blog-list').click(getBlogList);
+                $('button#blog-search').click(searchBlogs);
             });
         </script>
     </head>
@@ -66,6 +76,8 @@
         <div id='button-block'>
             <button id='blog-types'>Рубрики</button>
             <button id='blog-list'>Блоги</button>
+            <input type='text' alt='Поиск' name='search-query'/>
+            <button id='blog-search'>Поиск</button>
         </div>
         <div id='content'>
         </div>
