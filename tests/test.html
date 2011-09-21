@@ -33,8 +33,32 @@
                     var x = data.response[i];
                     div = x.id.substring(0, x.id.length-1);
                     div.replace('/', '');
-                    parent.append('<div id="' + div + '"><a href="http://habrahabr.ru/blogs/' + x.id + '">' + x['name'] + '</a></div>');
+                    parent.append('<div id="' + div + '"><a id="' + x.id + '" href="http://habrahabr.ru/blogs/' + x.id + '">' + x['name'] + '</a></div>');
                 }
+                $('a').click(function (event) {
+                    event.preventDefault();
+                    getPostsList(event.target.id);
+                })
+            }
+            
+            function postsList(data, textStatus, jqXHR) {
+                var len = data.response.length,
+                    parent = $('#content');               
+
+                for (var i = 0; i < len; ++i) {
+                    var x = data.response[i];
+                    parent.append('<div><a href="' + x.link + '">' + x.title + '</a></div>');
+                }
+            }
+            
+            function getPostsList(blog) {
+                $('#content').children().remove();
+                
+                $.ajax({url: 'http://localhost:8080/posts?blog=' + (blog || ''),
+                        dataType: 'jsonp', 
+                        crossDomain: true, 
+                        success: postsList
+                        });
             }
 
             function getBlogList(cat) {
